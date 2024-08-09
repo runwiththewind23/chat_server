@@ -1,0 +1,1 @@
+/usr/bin/c++  -g -Wall CMakeFiles/server.dir/src/server.cpp.o CMakeFiles/server.dir/src/handleserver.cpp.o CMakeFiles/server.dir/src/lock.cpp.o CMakeFiles/server.dir/src/mysql_connection_pool.cpp.o CMakeFiles/server.dir/src/redis_connection_pool.cpp.o -o server  -lmysqlclient -lpthread -lhiredis

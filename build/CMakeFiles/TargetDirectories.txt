@@ -1,0 +1,4 @@
+/home/sxd/chat/build/CMakeFiles/client.dir
+/home/sxd/chat/build/CMakeFiles/server.dir
+/home/sxd/chat/build/CMakeFiles/edit_cache.dir
+/home/sxd/chat/build/CMakeFiles/rebuild_cache.dir
