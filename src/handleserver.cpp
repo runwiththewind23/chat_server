@@ -34,7 +34,7 @@ void handleserver::run() {
 
     cout << "用户" << inet_ntoa(cliaddr.sin_addr) << "正在连接:\n";
     boost::asio::post(
-        boost::bind(&handleserver::handle_all_request, this, cfd)); // 执行函数
+        std::bind(&handleserver::handle_all_request, this, cfd)); // 执行函数
   }
   tp.join(); // 释放线程池
 }

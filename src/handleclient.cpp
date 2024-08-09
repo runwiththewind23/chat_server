@@ -67,7 +67,7 @@ void handleclient::run() {
     memset(cookie_ans, 0, sizeof(cookie_ans));
     recv(cfd, cookie_ans, sizeof(cookie_ans), 0);
     std::string ans_str(cookie_ans);
-    if (ans_str != "NULL" || ans_str != "nullptr") {
+    if (ans_str != "NULL") {
       if_login = true;
       login_name = ans_str;
     }
@@ -141,64 +141,64 @@ void handleclient::run() {
 
     if (if_login)
       break; //登陆成功
-    while (if_login && 1) {
-      if (if_login) {
-        system("clear");
-        std::cout << "        欢迎回来," << login_name << std::endl;
-        std::cout << " -------------------------------------------\n";
-        std::cout << "|                                           |\n";
-        std::cout << "|          请选择你要的选项：               |\n";
-        std::cout << "|              0:退出                       |\n";
-        std::cout << "|              1:发起单独聊天               |\n";
-        std::cout << "|              2:发起群聊                   |\n";
-        std::cout << "|                                           |\n";
-        std::cout << " ------------------------------------------- \n\n";
-      }
-      std::cin >> choice;
-      pthread_t send_t, recv_t; //线程ID
-      void *thread_return;
-      if (choice == 0)
-        break;
-      if (choice == 1) {
-        std::cout << "请输入对方的用户名:";
-        std::string target_name, content;
-        std::cin >> target_name;
-        std::string sendstr("target:" + target_name +
-                            "from:" + login_name); //标识目标用户+源用户
-        send(cfd, sendstr.c_str(), sendstr.length(),
-             0); //先向服务器发送目标用户、源用户
-        std::cout << "请输入你想说的话(输入exit退出)：\n";
-        auto send_thread = pthread_create(&send_t, NULL, handle_send,
-                                          (void *)&cfd); //创建发送线程
-        auto recv_thread = pthread_create(&recv_t, NULL, handle_recv,
-                                          (void *)&cfd); //创建接收线程
-        pthread_join(send_t, &thread_return);
-        // pthread_join(recv_t,&thread_return);
-        pthread_cancel(recv_t);
-      }
-      /*
-      线程取消的意思就是**在某些特定情况下在一个线程中杀死另一个线程**。使用这个函数杀死一个线程需要分两步：
-    ​
-    在线程A中**调用线程取消函数pthread_cancel**，指定杀死线程B，这时候线程B是死不了的
-    ​
-    在线程B中**进程一次系统调用（从用户区切换到内核区）**，否则线程B可以一直运行。
-      */
-      if (choice == 2) {
-        std::cout << "请输入群号:";
-        int num;
-        std::cin >> num;
-        std::string sendstr("group:" + std::to_string(num));
-        send(cfd, sendstr.c_str(), sendstr.length(), 0);
-        std::cout << "请输入你想说的话(输入exit退出)：\n";
-        int cfd1 = -cfd;
-        auto send_thread = pthread_create(&send_t, NULL, handle_send,
-                                          (void *)&cfd1); //创建发送线程
-        auto recv_thread = pthread_create(&recv_t, NULL, handle_recv,
-                                          (void *)&cfd); //创建接收线程
-        pthread_join(send_t, &thread_return);
-        pthread_cancel(recv_t);
-      }
-    }
-    std::cout << 1 << std::endl;
   }
+  while (if_login && 1) {
+    if (if_login) {
+      system("clear");
+      std::cout << "        欢迎回来," << login_name << std::endl;
+      std::cout << " -------------------------------------------\n";
+      std::cout << "|                                           |\n";
+      std::cout << "|          请选择你要的选项：               |\n";
+      std::cout << "|              0:退出                       |\n";
+      std::cout << "|              1:发起单独聊天               |\n";
+      std::cout << "|              2:发起群聊                   |\n";
+      std::cout << "|                                           |\n";
+      std::cout << " ------------------------------------------- \n\n";
+    }
+    std::cin >> choice;
+    pthread_t send_t, recv_t; //线程ID
+    void *thread_return;
+    if (choice == 0)
+      break;
+    if (choice == 1) {
+      std::cout << "请输入对方的用户名:";
+      std::string target_name, content;
+      std::cin >> target_name;
+      std::string sendstr("target:" + target_name +
+                          "from:" + login_name); //标识目标用户+源用户
+      send(cfd, sendstr.c_str(), sendstr.length(),
+           0); //先向服务器发送目标用户、源用户
+      std::cout << "请输入你想说的话(输入exit退出)：\n";
+      auto send_thread = pthread_create(&send_t, NULL, handle_send,
+                                        (void *)&cfd); //创建发送线程
+      auto recv_thread = pthread_create(&recv_t, NULL, handle_recv,
+                                        (void *)&cfd); //创建接收线程
+      pthread_join(send_t, &thread_return);
+      // pthread_join(recv_t,&thread_return);
+      pthread_cancel(recv_t);
+    }
+    /*
+    线程取消的意思就是**在某些特定情况下在一个线程中杀死另一个线程**。使用这个函数杀死一个线程需要分两步：
+  ​
+  在线程A中**调用线程取消函数pthread_cancel**，指定杀死线程B，这时候线程B是死不了的
+  ​
+  在线程B中**进程一次系统调用（从用户区切换到内核区）**，否则线程B可以一直运行。
+    */
+    if (choice == 2) {
+      std::cout << "请输入群号:";
+      int num;
+      std::cin >> num;
+      std::string sendstr("group:" + std::to_string(num));
+      send(cfd, sendstr.c_str(), sendstr.length(), 0);
+      std::cout << "请输入你想说的话(输入exit退出)：\n";
+      int cfd1 = -cfd;
+      auto send_thread = pthread_create(&send_t, NULL, handle_send,
+                                        (void *)&cfd1); //创建发送线程
+      auto recv_thread = pthread_create(&recv_t, NULL, handle_recv,
+                                        (void *)&cfd); //创建接收线程
+      pthread_join(send_t, &thread_return);
+      pthread_cancel(recv_t);
+    }
+  }
+  std::cout << 1 << std::endl;
 }
