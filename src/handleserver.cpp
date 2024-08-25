@@ -7,9 +7,11 @@ void handleserver::run() {
     perror("socket");
     exit(0);
   }
+  int on = 1;
+int result = setsockopt(lfd, IPPROTO_TCP, TCP_NODELAY, (char *)&on, sizeof(int));
   struct sockaddr_in addr;
   addr.sin_family = AF_INET;
-  addr.sin_port = htons(10000);      // 大端端口
+  addr.sin_port = htons(5080);      // 大端端口
   addr.sin_addr.s_addr = INADDR_ANY; // 这个宏的值为0 == 0.0.0.0
 
   int ret = bind(lfd, (struct sockaddr *)&addr, sizeof(addr));
@@ -28,15 +30,15 @@ void handleserver::run() {
   struct sockaddr_in cliaddr;
   socklen_t clilen = sizeof(cliaddr);
   int cfd;
-  boost::asio::thread_pool tp(8); // boost线程池
+  ThreadPool tp(8); // boost线程池
 
   while (cfd = accept(lfd, (struct sockaddr *)&cliaddr, &clilen)) {
 
     cout << "用户" << inet_ntoa(cliaddr.sin_addr) << "正在连接:\n";
-    boost::asio::post(
+    tp.addtask(
         std::bind(&handleserver::handle_all_request, this, cfd)); // 执行函数
   }
-  tp.join(); // 释放线程池
+  tp.stop(); // 释放线程池
 }
 
 void handleserver::mysql_pool() {

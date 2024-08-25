@@ -8,11 +8,16 @@ void handleclient::init() {
     perror("socket");
     exit(0);
   }
+  int on = 1;
+int result = setsockopt(cfd, IPPROTO_TCP, TCP_NODELAY, (char *)&on, sizeof(int));
+if (result == -1) {
+    std::cout << "Close Nagle error" << std::endl;
+}
   // 2.连接服务器
   struct sockaddr_in addr;
   addr.sin_family = AF_INET;
-  addr.sin_port = htons(10000); //大端端口
-  inet_pton(AF_INET, "10.0.16.10", &addr.sin_addr.s_addr);
+  addr.sin_port = htons(5080); //大端端口
+  inet_pton(AF_INET, "192.168.123.228", &addr.sin_addr.s_addr);
   if (connect(cfd, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
     perror("connect");
     exit(0);
@@ -43,8 +48,8 @@ void *handleclient::handle_recv(void *arg) {
     memset(recv_buffer, 0, sizeof(recv_buffer));
     if (recv(sock, recv_buffer, sizeof(recv_buffer), 0) == 0)
       continue;
-    else if (recv(sock, recv_buffer, sizeof(recv_buffer), 0) == -1)
-      break;
+    //else if (recv(sock, recv_buffer, sizeof(recv_buffer), 0) == -1)
+    //  break;
     std::cout << std::string(recv_buffer) << std::endl;
   }
 }

@@ -14,7 +14,7 @@ include_directories(include)
 
 # Define source files
 set(CLIENT_SRC "src/client.cpp" "src/handleclient.cpp")
-set(SERVER_SRC "src/server.cpp" "src/handleserver.cpp" "src/lock.cpp" "src/mysql_connection_pool.cpp" "src/redis_connection_pool.cpp") 
+set(SERVER_SRC "src/server.cpp" "src/handleserver.cpp" "src/lock.cpp" "src/mysql_connection_pool.cpp" "src/redis_connection_pool.cpp" "src/ThreadPool.cpp") 
 # Add the client executable
 add_executable(client ${CLIENT_SRC})
 target_link_libraries(client pthread) # Link libraries if client needs them
